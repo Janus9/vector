@@ -134,6 +134,31 @@ public:
 		array = tempArray;
 		return back;
 	}
+	T pop(unsigned int index) {
+		// Removes element at index but also returns it for quick access //
+		if (index == 0) {
+			return pop_front();
+		}
+		if (index == size-1) {
+			return pop_back();
+		}
+		size--;
+		if (index < size && !empty()) {
+			T element = array[index];
+			T* tempArray = new T[capacity];
+			for (int i = 0; i < index; i++) {
+				tempArray[i] = array[i];
+			}
+			for (int i = index; i < size; i++) {
+				tempArray[i] = array[i+1];
+			}
+			delete[] array;
+			array = tempArray;
+			return element;
+		}
+		std::cerr << "\nError: Index out of bounds";
+		throw std::out_of_range("Bad Access");
+	}
 	T& at(unsigned int index) {
 		// Read / Write of element at array[index] WITH protection // 
 		if (index < size && !empty()) {
