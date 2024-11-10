@@ -16,5 +16,6 @@ at(index) -> accesses element in vector at index for read/write with protection
 print_vector() -> prints contents of vector to console
 debug_vector() -> prints out debugging information to console containing vector size, template size, size & capacity
 
-
+get_size() -> returns size of vector
+get_capacity() -> returns capacity of vector
 
