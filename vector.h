@@ -1,3 +1,16 @@
+/**
+* \file vector.h
+* \brief Dynamic array (replica of std::vector)
+* 
+* Defines the vector class, a template based dynamic array data structure
+* Provides operations including element access, insertion, deletion, automatic resizing (no manual operation)
+* 
+* Visit https://github.com/Janus9/vector for README for instructions on usage
+* 
+* \author Joshua Bayt
+* \date November 9th, 2024
+*/
+
 #pragma once
 #include <iostream>
 
@@ -30,43 +43,52 @@ public:
 		delete[] array;
 	}
 	void push_front(T data) {
-		// Pushes element to front of array //
+		// Pushes element to front of vector // 
 		size++;
-		T* tempArray = array;
 		if (size > capacity) {
 			capacity *= 2;
 		}
-		array = new T[capacity];
-		array[0] = data;
-		for (int i = 1; i < size-1; i++) {
-			array[i] = tempArray[i];
+		T* tempArray = new T[capacity];
+		tempArray[0] = data;
+		for (int i = 0; i < size - 1; i++) {
+			tempArray[i + 1] = array[i];
 		}
-		delete[] tempArray;
+		delete[] array;
+		array = tempArray;
 	}
 	void push_back(T data) {
+		// Pushes element to back of vector // 
 		size++;
-		T* tempArray = array;
 		if (size > capacity) {
 			capacity *= 2;
+			T* tempArray = new T[capacity];
+			for (int i = 0; i < size - 1; i++) {
+				tempArray[i] = array[i];
+			}
+			tempArray[size - 1] = data;
+			delete[] array;
+			array = tempArray;
 		}
-		array = new T(capacity);
-		array[size-1] = data;
-		for (int i = 0; i < size-1; i++) {
-			array[i] = tempArray[i];
+		else {
+			array[size - 1] = data;
 		}
-		delete[] tempArray;
+				
 	}
 	T peek_front() {
+		// Returns element at front of vector // 
 		if (!empty()) {
 			return array[0];
 		}
-		return -1;
+		std::cerr << "\nError: Vector is empty";
+		throw std::out_of_range("Vector incorrect index");
 	}
 	T peek_back() {
+		// Returns element at end of vector d// 
 		if (!empty()) {
-			return array[size-1];
+			return array[size - 1];
 		}
-		return -1;
+		std::cerr << "\nError: Vector is empty";
+		throw std::out_of_range("Vector incorrect index");
 	}
 	bool empty() {
 		if (size <= 0) {
@@ -88,13 +110,42 @@ public:
 		std::cout << "\nSize: " << size;
 		std::cout << "\nCapacity: " << capacity;
 	}
-	//T pop_front() {
-		// Removes element at front but also returns it for quick access // 
-	//}
-	//T pop_back() {
+	T pop_front() {
+		// Removes element at front but also returns it for quick access //
+		size--;
+		T front = array[0];
+		T* tempArray = new T[capacity];
+		for (int i = 0; i < size; i++) {
+			tempArray[i] = array[i+1];
+		}
+		delete[] array;
+		array = tempArray;
+		return front;
+	}
+	T pop_back() {
 		// Removes element at end but also returns it for quick access // 
-
-	//}
+		size--;
+		T back = array[size];
+		T* tempArray = new T[capacity];
+		for (int i = 0; i < size; i++) {
+			tempArray[i] = array[i];
+		}
+		delete[] array;
+		array = tempArray;
+		return back;
+	}
+	T& at(unsigned int index) {
+		// Read / Write of element at array[index] WITH protection // 
+		if (index < size && !empty()) {
+			return array[index];
+		}
+		std::cerr << "\nError: Index out of bounds";
+		throw std::out_of_range("Bad Access");
+	}
+	T& operator[] (unsigned int index) {
+		// Read / Write of element at array[index] WITHOUT protection // 
+		return array[index];
+	}
 	unsigned int get_size() {
 		// Size = # of elements IN array //
 		return size;
